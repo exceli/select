@@ -25,6 +25,9 @@
     border: 1px solid #ccc;
     background-color: white;
     z-index: 1;
+
+    max-height: 160px;
+    overflow-y: auto;
 }
 
 .selectDropdownItem {
@@ -33,5 +36,9 @@
 
     &:hover {
         background-color: #f0f0f0;
+    }
+
+    &.selected {
+        background-color: #d0d0d0;
     }
 }
