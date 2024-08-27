@@ -1,30 +1,53 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import style from './select.module.scss'
 
-interface SelectProps<T> {
-	options: T[]
-	isMultiSelect?: boolean
-	getOptionId: (option: T) => number
-	getOptionName: (option: T) => string
+export interface Option {
+	id: number
+	label: string
+	name: string
 }
 
-export const Select = <T,>({
+interface SelectProps<T extends Option> {
+	options: T[]
+	isMultiSelect?: boolean
+	defaultValue?: string | number | (string | number)[]
+}
+
+export const Select = <T extends Option>({
 	options,
 	isMultiSelect = false,
-	getOptionId,
-	getOptionName,
+	defaultValue,
 }: SelectProps<T>) => {
 	const [selectedOptions, setSelectedOptions] = useState<T[]>([])
 	const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false)
 
+	const findOptionByValue = (value: string | number): T | undefined => {
+		return options.find(
+			option => option.name === value || option.id === value
+		)
+	}
+
+	useEffect(() => {
+		if (defaultValue) {
+			const defaultOptions = Array.isArray(defaultValue)
+				? defaultValue
+						.map(value => findOptionByValue(value))
+						.filter((option): option is T => option !== undefined)
+				: findOptionByValue(defaultValue)
+				? [findOptionByValue(defaultValue)].filter(
+						(option): option is T => option !== undefined
+				  )
+				: []
+
+			setSelectedOptions(defaultOptions)
+		}
+	}, [defaultValue])
+
 	const handleSelect = (option: T) => {
-		const optionId = getOptionId(option)
 		if (isMultiSelect) {
 			setSelectedOptions(prevSelectedOptions =>
-				prevSelectedOptions.some(opt => getOptionId(opt) === optionId)
-					? prevSelectedOptions.filter(
-							opt => getOptionId(opt) !== optionId
-					  )
+				prevSelectedOptions.some(opt => opt.id === option.id)
+					? prevSelectedOptions.filter(opt => opt.id !== option.id)
 					: [...prevSelectedOptions, option]
 			)
 		} else {
@@ -34,9 +57,9 @@ export const Select = <T,>({
 	}
 
 	const displayValue = isMultiSelect
-		? selectedOptions.map(getOptionName).join(', ')
+		? selectedOptions.map(option => option.label || option.name).join(', ')
 		: selectedOptions[0]
-		? getOptionName(selectedOptions[0])
+		? selectedOptions[0].label || selectedOptions[0].name
 		: ''
 
 	return (
@@ -58,18 +81,17 @@ export const Select = <T,>({
 				<div className={style.selectDropdown}>
 					{options.map(option => (
 						<div
-							key={getOptionId(option)}
+							key={option.id}
 							className={`${style.selectDropdownItem} ${
 								selectedOptions.some(
-									opt =>
-										getOptionId(opt) === getOptionId(option)
+									opt => opt.id === option.id
 								)
 									? style.selected
 									: ''
 							}`}
 							onClick={() => handleSelect(option)}
 						>
-							{getOptionName(option)}
+							{option.label || option.name}
 						</div>
 					))}
 				</div>
