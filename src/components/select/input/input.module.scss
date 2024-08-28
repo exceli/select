@@ -1,0 +1,30 @@
+.selectContainer {
+    min-width: 292px;
+
+    border-radius: 8px;
+    border: 1px solid #e1e0e3;
+    padding: 8px;
+    cursor: pointer;
+
+    &:hover {
+        border: 1px solid #6E328C7A;
+        box-shadow: 0px 0px 0px 3px #71308E1F;
+    }
+
+    &:focus-visible {
+        outline: none;
+    }
+
+    &:focus {
+        border: 1px solid #6E328C7A;
+        box-shadow: 0px 0px 0px 3px #71308E1F;
+    }
+
+    .selectInput {
+        input {
+            width: 100%;
+            border: none;
+            outline: none;
+        }
+    }
+}

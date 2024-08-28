@@ -1,5 +1,6 @@
 'use client'
 
+import { CustomDropdown } from '../customDropdown/customDropdown'
 import { Option, Select } from '../select/select'
 import style from './main.module.scss'
 
@@ -39,7 +40,29 @@ const options: Option[] = [
 export const MainPage = () => {
 	return (
 		<div className={style.main}>
-			<Select options={options} isMultiSelect={true} defaultValue={3} />
+			<div>
+				<div>Default</div>
+				<Select options={options} />
+			</div>
+			<div>
+				<div>Custom dropdown</div>
+				<Select
+					options={options}
+					isMultiSelect={true}
+					defaultValue={3}
+					renderDropdown={(
+						options,
+						selectedOptions,
+						handleSelect
+					) => (
+						<CustomDropdown
+							options={options}
+							selectedOptions={selectedOptions}
+							handleSelect={handleSelect}
+						/>
+					)}
+				/>
+			</div>
 		</div>
 	)
 }
