@@ -1,6 +1,7 @@
 import clsx from 'clsx'
 import { Option } from '../select'
 import style from './dropdown.module.scss'
+import { Item } from './item/item'
 
 interface DropdownProps<T extends Option> {
 	options: T[]
@@ -19,23 +20,12 @@ export const Dropdown = <T extends Option>({
 		<div className={clsx(style.dropdown, className)}>
 			<div className={style.wrap}>
 				{options.map(option => (
-					<div
+					<Item
 						key={option.id}
-						className={`${style.selectDropdownItem} ${
-							selectedOptions.some(opt => opt.id === option.id)
-								? style.selected
-								: ''
-						}`}
-						onClick={() => handleSelect(option)}
-					>
-						<div className={style.image}>
-							<div>Aa</div>
-						</div>
-						<div className={style.text}>
-							<div className={style.name}>{option.name}</div>
-							<div className={style.label}>{option.label}</div>
-						</div>
-					</div>
+						option={option}
+						selectedOptions={selectedOptions}
+						handleSelect={handleSelect}
+					/>
 				))}
 			</div>
 		</div>

@@ -20,52 +20,5 @@
         box-shadow: 0px 16px 64px -4px #16081E14;
 
         overflow-y: auto;
-
-        .selectDropdownItem {
-            display: flex;
-
-            padding: 11px 7px;
-
-            border-radius: 8px;
-
-            cursor: pointer;
-
-            &:hover {
-                background-color: #f0f0f0;
-            }
-
-            &.selected {
-                background-color: #d0d0d0;
-            }
-
-            .image {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-
-                width: 32px;
-                height: 32px;
-
-                border-radius: 6px;
-                border: 1px solid #d5d2d5;
-            }
-
-            .text {
-                display: flex;
-                flex-direction: column;
-                justify-content: space-between;
-
-                margin-left: 8px;
-
-                .name {
-                    font-size: 15px;
-                }
-
-                .label {
-                    font-size: 13px;
-                    color: rgb(135, 130, 138);
-                }
-            }
-        }
     }
 }
