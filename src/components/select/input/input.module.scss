@@ -3,7 +3,9 @@
 
     border-radius: 8px;
     border: 1px solid #e1e0e3;
+
     padding: 8px;
+
     cursor: pointer;
 
     &:hover {
@@ -21,10 +23,38 @@
     }
 
     .selectInput {
+        .selectedItems {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
         input {
             width: 100%;
             border: none;
             outline: none;
+        }
+    }
+}
+
+.selectedOption {
+    display: flex;
+    align-items: flex-start;
+
+    padding: 3px;
+
+    border-radius: 4px;
+    background-color: #f0f0f0;
+
+    .removeIcon {
+        margin-left: 8px;
+
+        cursor: pointer;
+
+        color: #999;
+
+        &:hover {
+            color: #333;
         }
     }
 }

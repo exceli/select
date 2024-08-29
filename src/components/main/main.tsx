@@ -1,38 +1,39 @@
 'use client'
 
 import { CustomDropdown } from '../customDropdown/customDropdown'
+import { CustomLabel } from '../customLabel/customLabel'
 import { Option, Select } from '../select/select'
 import style from './main.module.scss'
 
 const options: Option[] = [
 	{
 		id: 1,
-		label: 'Опция 1',
+		label: 'Subtitle',
 		name: 'Item 1',
 	},
 	{
 		id: 2,
-		label: 'Опция 2',
+		label: 'Subtitle',
 		name: 'Item 2',
 	},
 	{
 		id: 3,
-		label: 'Опция 3',
+		label: 'Subtitle',
 		name: 'Item 3',
 	},
 	{
 		id: 4,
-		label: 'Опция 4',
+		label: 'Subtitle',
 		name: 'Item 4',
 	},
 	{
 		id: 5,
-		label: 'Опция 5',
+		label: 'Subtitle',
 		name: 'Item 5',
 	},
 	{
 		id: 6,
-		label: 'Опция 6',
+		label: 'Subtitle',
 		name: 'Item 6',
 	},
 ]
@@ -74,8 +75,9 @@ export const MainPage = () => {
 					<div>Custom label</div>
 					<Select
 						options={options}
+						isMultiSelect={true}
 						renderLabel={option => (
-							<span style={{ color: 'red' }}>{option.name}</span>
+							<CustomLabel name={option.name} />
 						)}
 					/>
 				</div>

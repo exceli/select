@@ -19,6 +19,7 @@ interface SelectProps<T extends Option> {
 		selectedOptions: T[],
 		handleSelect: (option: T) => void
 	) => ReactNode
+	renderLabel?: (option: T) => ReactNode
 	className?: string
 	dropdownClassName?: string
 }
@@ -28,6 +29,7 @@ export const Select = <T extends Option>({
 	isMultiSelect = false,
 	defaultValue,
 	renderDropdown,
+	renderLabel,
 	className,
 	dropdownClassName,
 }: SelectProps<T>) => {
@@ -70,11 +72,27 @@ export const Select = <T extends Option>({
 		}
 	}
 
-	const displayValue = isMultiSelect
-		? selectedOptions.map(option => option.label || option.name).join(', ')
-		: selectedOptions[0]
-		? selectedOptions[0].label || selectedOptions[0].name
-		: ''
+	const handleRemove = (index: number) => {
+		setSelectedOptions(prevSelectedOptions =>
+			prevSelectedOptions.filter((_, i) => i !== index)
+		)
+	}
+
+	const getDisplayValue = (): ReactNode => {
+		if (isMultiSelect) {
+			return selectedOptions.map(option =>
+				renderLabel ? renderLabel(option) : option.name
+			)
+		} else {
+			return selectedOptions[0]
+				? renderLabel
+					? renderLabel(selectedOptions[0])
+					: selectedOptions[0].name
+				: ''
+		}
+	}
+
+	const displayValue = getDisplayValue()
 
 	const handleKeyDown = (event: React.KeyboardEvent) => {
 		if (event.key === 'Enter') {
@@ -111,6 +129,7 @@ export const Select = <T extends Option>({
 				displayValue={displayValue}
 				isDropdownOpen={isDropdownOpen}
 				setIsDropdownOpen={setIsDropdownOpen}
+				onRemove={handleRemove}
 			/>
 			{isDropdownOpen &&
 				(renderDropdown ? (
