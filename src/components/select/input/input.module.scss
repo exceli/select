@@ -1,12 +1,9 @@
 .selectContainer {
     min-width: 292px;
-
     border-radius: 8px;
     border: 1px solid #e1e0e3;
-
     padding: 8px;
-
-    cursor: pointer;
+    cursor: text;
 
     &:hover {
         border: 1px solid #6E328C7A;
@@ -23,6 +20,10 @@
     }
 
     .selectInput {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+
         .selectedItems {
             display: flex;
             flex-wrap: wrap;
@@ -30,27 +31,25 @@
         }
 
         input {
-            width: 100%;
+            width: auto;
+            min-width: 4px;
             border: none;
             outline: none;
+            flex-grow: 1;
         }
     }
 }
 
 .selectedOption {
     display: flex;
-    align-items: flex-start;
-
-    padding: 3px;
-
+    align-items: center;
+    padding: 3px 8px;
     border-radius: 4px;
     background-color: #f0f0f0;
 
     .removeIcon {
         margin-left: 8px;
-
         cursor: pointer;
-
         color: #999;
 
         &:hover {

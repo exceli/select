@@ -1,3 +1,4 @@
+import { useSearch } from '@/hooks/useSearch'
 import clsx from 'clsx'
 import { ReactNode, useEffect, useRef, useState } from 'react'
 import { Dropdown } from './dropdown/dropdown'
@@ -22,6 +23,8 @@ interface SelectProps<T extends Option> {
 	renderLabel?: (option: T) => ReactNode
 	className?: string
 	dropdownClassName?: string
+	enableSearch?: boolean
+	placeholder?: string
 }
 
 export const Select = <T extends Option>({
@@ -32,10 +35,14 @@ export const Select = <T extends Option>({
 	renderLabel,
 	className,
 	dropdownClassName,
+	enableSearch = false,
+	placeholder = 'Placeholder',
 }: SelectProps<T>) => {
 	const [selectedOptions, setSelectedOptions] = useState<T[]>([])
 	const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false)
 	const selectRef = useRef<HTMLDivElement>(null)
+
+	const { searchValue, handleSearch, filteredOptions } = useSearch(options)
 
 	const findOptionByValue = (value: string | number): T | undefined => {
 		return options.find(
@@ -70,6 +77,7 @@ export const Select = <T extends Option>({
 			setSelectedOptions([option])
 			setIsDropdownOpen(false)
 		}
+		handleSearch('')
 	}
 
 	const handleRemove = (index: number) => {
@@ -78,17 +86,19 @@ export const Select = <T extends Option>({
 		)
 	}
 
-	const getDisplayValue = (): ReactNode => {
+	const getDisplayValue = (): ReactNode[] => {
 		if (isMultiSelect) {
 			return selectedOptions.map(option =>
 				renderLabel ? renderLabel(option) : option.name
 			)
 		} else {
-			return selectedOptions[0]
-				? renderLabel
-					? renderLabel(selectedOptions[0])
-					: selectedOptions[0].name
-				: ''
+			return selectedOptions.length > 0
+				? [
+						renderLabel
+							? renderLabel(selectedOptions[0])
+							: selectedOptions[0].name,
+				  ]
+				: []
 		}
 	}
 
@@ -130,13 +140,21 @@ export const Select = <T extends Option>({
 				isDropdownOpen={isDropdownOpen}
 				setIsDropdownOpen={setIsDropdownOpen}
 				onRemove={handleRemove}
+				onSearch={handleSearch}
+				searchValue={searchValue}
+				enableSearch={enableSearch}
+				placeholder={placeholder}
 			/>
 			{isDropdownOpen &&
 				(renderDropdown ? (
-					renderDropdown(options, selectedOptions, handleSelect)
+					renderDropdown(
+						filteredOptions,
+						selectedOptions,
+						handleSelect
+					)
 				) : (
 					<Dropdown
-						options={options}
+						options={filteredOptions}
 						selectedOptions={selectedOptions}
 						handleSelect={handleSelect}
 						className={dropdownClassName}

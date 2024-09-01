@@ -33,7 +33,7 @@ export const CustomDropdown = <T extends Option>({
 					}}
 					onClick={() => handleSelect(option)}
 				>
-					{option.label || option.name}
+					{option.name}
 				</div>
 			))}
 		</div>

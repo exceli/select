@@ -81,6 +81,15 @@ export const MainPage = () => {
 						)}
 					/>
 				</div>
+				<div>
+					<div>Search on</div>
+					<Select
+						options={options}
+						defaultValue={3}
+						isMultiSelect={true}
+						enableSearch={true}
+					/>
+				</div>
 			</div>
 		</div>
 	)
