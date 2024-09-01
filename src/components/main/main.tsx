@@ -57,6 +57,12 @@ export const MainPage = () => {
 		setSelected(selectedOptions)
 	}
 
+	const handleRemoveLabel = (id: number) => {
+		setSelected(prevSelected =>
+			prevSelected.filter(option => option.id !== id)
+		)
+	}
+
 	console.log(selected)
 
 	return (
@@ -105,8 +111,13 @@ export const MainPage = () => {
 					<Select
 						options={options}
 						isMultiSelect={true}
+						defaultValue={3}
 						renderLabel={option => (
-							<CustomLabel name={option.name} />
+							<CustomLabel
+								name={option.name}
+								avatarUrl="/avatar.png"
+								onRemove={() => handleRemoveLabel(option.id)}
+							/>
 						)}
 						onChange={handleSelectChange}
 					/>

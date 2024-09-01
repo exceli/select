@@ -28,6 +28,24 @@
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
+
+            .selectedOption {
+                display: flex;
+                align-items: center;
+                padding: 3px 8px;
+                border-radius: 4px;
+                background-color: #f0f0f0;
+
+                .removeIcon {
+                    margin-left: 8px;
+                    cursor: pointer;
+                    color: #999;
+
+                    &:hover {
+                        color: #333;
+                    }
+                }
+            }
         }
 
         input {
@@ -36,24 +54,6 @@
             border: none;
             outline: none;
             flex-grow: 1;
-        }
-    }
-}
-
-.selectedOption {
-    display: flex;
-    align-items: center;
-    padding: 3px 8px;
-    border-radius: 4px;
-    background-color: #f0f0f0;
-
-    .removeIcon {
-        margin-left: 8px;
-        cursor: pointer;
-        color: #999;
-
-        &:hover {
-            color: #333;
         }
     }
 }

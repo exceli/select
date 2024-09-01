@@ -1,19 +1,29 @@
+import clsx from 'clsx'
 import { FC } from 'react'
+import style from './customLabel.module.scss'
 
 interface CustomLabelProps {
 	name: string
+	avatarUrl?: string
+	onRemove?: () => void
 }
 
-export const CustomLabel: FC<CustomLabelProps> = ({ name }) => {
+export const CustomLabel: FC<CustomLabelProps> = ({
+	name,
+	avatarUrl,
+	onRemove,
+}) => {
 	return (
-		<span
-			style={{
-				color: 'red',
-				backgroundColor: 'rgb(135, 255, 135)',
-				borderRadius: '5px',
-			}}
-		>
-			{name}
-		</span>
+		<div className={clsx(style.labelContainer)}>
+			{avatarUrl && (
+				<img src={avatarUrl} alt={`${name}`} className={style.avatar} />
+			)}
+			<span className={style.name}>{name}</span>
+			{onRemove && (
+				<button className={style.removeButton} onClick={onRemove}>
+					&times;
+				</button>
+			)}
+		</div>
 	)
 }

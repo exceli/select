@@ -1,0 +1,38 @@
+.labelContainer {
+    display: flex;
+    align-items: center;
+
+    border-radius: 5px;
+    background: #f4eff7;
+
+    padding: 4px;
+
+    color: rgb(89, 30, 121);
+    font-size: 14px;
+
+    .removeButton {
+        background: none;
+        border: none;
+        color: #a27cb5;
+        cursor: pointer;
+        font-size: 16px;
+        line-height: 1;
+        padding: 0;
+        margin-left: 5px;
+    }
+}
+
+.avatar {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+
+.icon {
+    margin-right: 5px;
+}
+
+.name {
+    flex: 1;
+}

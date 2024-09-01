@@ -111,6 +111,7 @@ export const Select = <T extends Option>({
 					isMultiSelect,
 					renderLabel
 				)}
+				renderLabel={renderLabel}
 				isDropdownOpen={isDropdownOpen}
 				setIsDropdownOpen={toggleDropdown}
 				onRemove={handleRemove}

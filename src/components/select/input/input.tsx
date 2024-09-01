@@ -1,15 +1,9 @@
-import {
-	ChangeEvent,
-	FC,
-	KeyboardEvent,
-	ReactNode,
-	useEffect,
-	useRef,
-} from 'react'
+import { ChangeEvent, KeyboardEvent, ReactNode, useEffect, useRef } from 'react'
 import style from './input.module.scss'
 
-interface InputProps {
-	displayValue: ReactNode
+interface InputProps<T> {
+	displayValue: ReactNode[]
+	renderLabel?: (option: T) => ReactNode
 	isDropdownOpen: boolean
 	setIsDropdownOpen: React.Dispatch<React.SetStateAction<boolean>>
 	onRemove: (index: number) => void
@@ -19,8 +13,9 @@ interface InputProps {
 	placeholder?: string
 }
 
-export const Input: FC<InputProps> = ({
+export const Input = <T,>({
 	displayValue,
+	renderLabel,
 	isDropdownOpen,
 	setIsDropdownOpen,
 	onRemove,
@@ -28,7 +23,7 @@ export const Input: FC<InputProps> = ({
 	searchValue,
 	enableSearch,
 	placeholder,
-}) => {
+}: InputProps<T>) => {
 	const inputRef = useRef<HTMLInputElement>(null)
 
 	const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -74,8 +69,11 @@ export const Input: FC<InputProps> = ({
 		<div className={style.selectContainer} onClick={handleContainerClick}>
 			<div className={style.selectInput}>
 				<div className={style.selectedItems}>
-					{hasSelectedItems
-						? displayValue.map((val, index) => (
+					{hasSelectedItems &&
+						displayValue.map((val, index) =>
+							renderLabel ? (
+								<div key={index}>{val}</div>
+							) : (
 								<div
 									key={index}
 									className={style.selectedOption}
@@ -91,23 +89,10 @@ export const Input: FC<InputProps> = ({
 										&times;
 									</span>
 								</div>
-						  ))
-						: !enableSearch && (
-								<input
-									ref={inputRef}
-									type="text"
-									value={searchValue}
-									onKeyDown={handleKeyDown}
-									onChange={handleSearchChange}
-									placeholder={
-										hasSelectedItems ? '' : placeholder
-									}
-									className={style.searchInput}
-								/>
-						  )}
+							)
+						)}
 				</div>
-
-				{enableSearch && (
+				{(!hasSelectedItems || enableSearch) && (
 					<input
 						ref={inputRef}
 						type="text"
