@@ -35,10 +35,16 @@ export const Input: FC<InputProps> = ({
 		onSearch(e.target.value)
 	}
 
-	const handleContainerClick = () => {
-		setIsDropdownOpen(!isDropdownOpen)
-		if (inputRef.current) {
-			inputRef.current.focus()
+	const handleContainerClick = (e: React.MouseEvent) => {
+		if (inputRef.current && inputRef.current.contains(e.target as Node)) {
+			if (!isDropdownOpen) {
+				setIsDropdownOpen(true)
+			}
+		} else {
+			setIsDropdownOpen(!isDropdownOpen)
+			if (inputRef.current) {
+				inputRef.current.focus()
+			}
 		}
 	}
 

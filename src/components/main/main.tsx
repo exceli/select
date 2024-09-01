@@ -1,11 +1,12 @@
 'use client'
 
+import { useState } from 'react'
 import { CustomDropdown } from '../customDropdown/customDropdown'
 import { CustomLabel } from '../customLabel/customLabel'
 import { Option, Select } from '../select/select'
 import style from './main.module.scss'
 
-const options: Option[] = [
+const initialOptions: Option[] = [
 	{
 		id: 1,
 		label: 'Subtitle',
@@ -39,6 +40,18 @@ const options: Option[] = [
 ]
 
 export const MainPage = () => {
+	const [options, setOptions] = useState<Option[]>(initialOptions)
+
+	const handleCreateOption = async (name: string): Promise<Option> => {
+		const newOption = {
+			id: options.length + 1,
+			label: 'Subtitle',
+			name,
+		}
+		setOptions(prevOptions => [...prevOptions, newOption])
+		return newOption
+	}
+
 	return (
 		<div className={style.main}>
 			<div>
@@ -88,6 +101,16 @@ export const MainPage = () => {
 						defaultValue={3}
 						isMultiSelect={true}
 						enableSearch={true}
+					/>
+				</div>
+				<div>
+					<div>Search and add label on</div>
+					<Select
+						options={options}
+						defaultValue={3}
+						isMultiSelect={true}
+						enableSearch={true}
+						onCreateOption={handleCreateOption}
 					/>
 				</div>
 			</div>

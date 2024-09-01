@@ -21,6 +21,7 @@ interface SelectProps<T extends Option> {
 		handleSelect: (option: T) => void
 	) => ReactNode
 	renderLabel?: (option: T) => ReactNode
+	onCreateOption?: (name: string) => Promise<T>
 	className?: string
 	dropdownClassName?: string
 	enableSearch?: boolean
@@ -33,6 +34,7 @@ export const Select = <T extends Option>({
 	defaultValue,
 	renderDropdown,
 	renderLabel,
+	onCreateOption,
 	className,
 	dropdownClassName,
 	enableSearch = false,
@@ -84,6 +86,19 @@ export const Select = <T extends Option>({
 		setSelectedOptions(prevSelectedOptions =>
 			prevSelectedOptions.filter((_, i) => i !== index)
 		)
+	}
+
+	const handleCreateOption = async (name: string) => {
+		if (onCreateOption) {
+			const newOption = await onCreateOption(name)
+			setSelectedOptions(prevSelectedOptions =>
+				isMultiSelect
+					? [...prevSelectedOptions, newOption]
+					: [newOption]
+			)
+			handleSearch('')
+			setIsDropdownOpen(false)
+		}
 	}
 
 	const getDisplayValue = (): ReactNode[] => {
@@ -157,6 +172,10 @@ export const Select = <T extends Option>({
 						options={filteredOptions}
 						selectedOptions={selectedOptions}
 						handleSelect={handleSelect}
+						handleCreateOption={
+							onCreateOption ? handleCreateOption : undefined
+						}
+						searchValue={searchValue}
 						className={dropdownClassName}
 					/>
 				))}
