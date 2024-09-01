@@ -1,6 +1,11 @@
+import { useClickOutside } from '@/hooks/useClickOutside'
+import { useDropdownToggle } from '@/hooks/useDropdownToggle'
+import { useHandleSelect } from '@/hooks/useHandleSelect'
 import { useSearch } from '@/hooks/useSearch'
+import { useSelectedOptions } from '@/hooks/useSelectedOptions'
+import { getDisplayValue } from '@/utils/getDisplayValue'
 import clsx from 'clsx'
-import { ReactNode, useEffect, useRef, useState } from 'react'
+import { KeyboardEvent, ReactNode, useRef } from 'react'
 import { Dropdown } from './dropdown/dropdown'
 import { Input } from './input/input'
 import style from './select.module.scss'
@@ -40,47 +45,21 @@ export const Select = <T extends Option>({
 	enableSearch = false,
 	placeholder = 'Placeholder',
 }: SelectProps<T>) => {
-	const [selectedOptions, setSelectedOptions] = useState<T[]>([])
-	const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false)
+	const { selectedOptions, setSelectedOptions } = useSelectedOptions(
+		options,
+		defaultValue
+	)
+	const { isDropdownOpen, toggleDropdown, closeDropdown } =
+		useDropdownToggle()
+	const { searchValue, handleSearch, filteredOptions } = useSearch(options)
 	const selectRef = useRef<HTMLDivElement>(null)
 
-	const { searchValue, handleSearch, filteredOptions } = useSearch(options)
-
-	const findOptionByValue = (value: string | number): T | undefined => {
-		return options.find(
-			option => option.name === value || option.id === value
-		)
-	}
-
-	useEffect(() => {
-		if (defaultValue) {
-			const defaultOptions = Array.isArray(defaultValue)
-				? defaultValue
-						.map(value => findOptionByValue(value))
-						.filter((option): option is T => option !== undefined)
-				: findOptionByValue(defaultValue)
-				? [findOptionByValue(defaultValue)].filter(
-						(option): option is T => option !== undefined
-				  )
-				: []
-
-			setSelectedOptions(defaultOptions)
-		}
-	}, [defaultValue])
-
-	const handleSelect = (option: T) => {
-		if (isMultiSelect) {
-			setSelectedOptions(prevSelectedOptions =>
-				prevSelectedOptions.some(opt => opt.id === option.id)
-					? prevSelectedOptions.filter(opt => opt.id !== option.id)
-					: [...prevSelectedOptions, option]
-			)
-		} else {
-			setSelectedOptions([option])
-			setIsDropdownOpen(false)
-		}
-		handleSearch('')
-	}
+	const handleSelect = useHandleSelect({
+		isMultiSelect,
+		setSelectedOptions,
+		closeDropdown,
+		handleSearch,
+	})
 
 	const handleRemove = (index: number) => {
 		setSelectedOptions(prevSelectedOptions =>
@@ -97,51 +76,19 @@ export const Select = <T extends Option>({
 					: [newOption]
 			)
 			handleSearch('')
-			setIsDropdownOpen(false)
+			closeDropdown()
 		}
 	}
 
-	const getDisplayValue = (): ReactNode[] => {
-		if (isMultiSelect) {
-			return selectedOptions.map(option =>
-				renderLabel ? renderLabel(option) : option.name
-			)
-		} else {
-			return selectedOptions.length > 0
-				? [
-						renderLabel
-							? renderLabel(selectedOptions[0])
-							: selectedOptions[0].name,
-				  ]
-				: []
-		}
-	}
-
-	const displayValue = getDisplayValue()
-
-	const handleKeyDown = (event: React.KeyboardEvent) => {
+	const handleKeyDown = (event: KeyboardEvent) => {
 		if (event.key === 'Enter') {
-			setIsDropdownOpen(!isDropdownOpen)
+			closeDropdown()
 		} else if (event.key === 'Escape') {
-			setIsDropdownOpen(false)
+			closeDropdown()
 		}
 	}
 
-	useEffect(() => {
-		const handleClickOutside = (event: MouseEvent) => {
-			if (
-				selectRef.current &&
-				!selectRef.current.contains(event.target as Node)
-			) {
-				setIsDropdownOpen(false)
-			}
-		}
-
-		document.addEventListener('mousedown', handleClickOutside)
-		return () => {
-			document.removeEventListener('mousedown', handleClickOutside)
-		}
-	}, [])
+	useClickOutside(selectRef, closeDropdown)
 
 	return (
 		<div
@@ -151,9 +98,13 @@ export const Select = <T extends Option>({
 			onKeyDown={handleKeyDown}
 		>
 			<Input
-				displayValue={displayValue}
+				displayValue={getDisplayValue(
+					selectedOptions,
+					isMultiSelect,
+					renderLabel
+				)}
 				isDropdownOpen={isDropdownOpen}
-				setIsDropdownOpen={setIsDropdownOpen}
+				setIsDropdownOpen={toggleDropdown}
 				onRemove={handleRemove}
 				onSearch={handleSearch}
 				searchValue={searchValue}
