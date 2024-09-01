@@ -41,6 +41,7 @@ const initialOptions: Option[] = [
 
 export const MainPage = () => {
 	const [options, setOptions] = useState<Option[]>(initialOptions)
+	const [selected, setSelected] = useState<Option[]>([])
 
 	const handleCreateOption = async (name: string): Promise<Option> => {
 		const newOption = {
@@ -52,20 +53,34 @@ export const MainPage = () => {
 		return newOption
 	}
 
+	const handleSelectChange = (selectedOptions: Option[]) => {
+		setSelected(selectedOptions)
+	}
+
+	console.log(selected)
+
 	return (
 		<div className={style.main}>
 			<div>
 				<div>
 					<div>Default</div>
-					<Select options={options} />
+					<Select options={options} onChange={handleSelectChange} />
 				</div>
 				<div>
 					<div>Default value</div>
-					<Select options={options} defaultValue={3} />
+					<Select
+						options={options}
+						defaultValue={3}
+						onChange={handleSelectChange}
+					/>
 				</div>
 				<div>
 					<div>Multiselect</div>
-					<Select options={options} isMultiSelect={true} />
+					<Select
+						options={options}
+						isMultiSelect={true}
+						onChange={handleSelectChange}
+					/>
 				</div>
 				<div>
 					<div>Custom dropdown</div>
@@ -82,6 +97,7 @@ export const MainPage = () => {
 								handleSelect={handleSelect}
 							/>
 						)}
+						onChange={handleSelectChange}
 					/>
 				</div>
 				<div>
@@ -92,6 +108,7 @@ export const MainPage = () => {
 						renderLabel={option => (
 							<CustomLabel name={option.name} />
 						)}
+						onChange={handleSelectChange}
 					/>
 				</div>
 				<div>
@@ -101,6 +118,7 @@ export const MainPage = () => {
 						defaultValue={3}
 						isMultiSelect={true}
 						enableSearch={true}
+						onChange={handleSelectChange}
 					/>
 				</div>
 				<div>
@@ -111,6 +129,7 @@ export const MainPage = () => {
 						isMultiSelect={true}
 						enableSearch={true}
 						onCreateOption={handleCreateOption}
+						onChange={handleSelectChange}
 					/>
 				</div>
 			</div>

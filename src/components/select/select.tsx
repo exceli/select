@@ -31,6 +31,7 @@ interface SelectProps<T extends Option> {
 	dropdownClassName?: string
 	enableSearch?: boolean
 	placeholder?: string
+	onChange?: (selectedOptions: T[]) => void
 }
 
 export const Select = <T extends Option>({
@@ -44,6 +45,7 @@ export const Select = <T extends Option>({
 	dropdownClassName,
 	enableSearch = false,
 	placeholder = 'Placeholder',
+	onChange,
 }: SelectProps<T>) => {
 	const { selectedOptions, setSelectedOptions } = useSelectedOptions(
 		options,
@@ -59,22 +61,28 @@ export const Select = <T extends Option>({
 		setSelectedOptions,
 		closeDropdown,
 		handleSearch,
+		onChange,
 	})
 
 	const handleRemove = (index: number) => {
-		setSelectedOptions(prevSelectedOptions =>
-			prevSelectedOptions.filter((_, i) => i !== index)
-		)
+		const newSelectedOptions = selectedOptions.filter((_, i) => i !== index)
+		setSelectedOptions(newSelectedOptions)
+		if (onChange) {
+			setTimeout(() => onChange(newSelectedOptions), 0)
+		}
 	}
 
 	const handleCreateOption = async (name: string) => {
 		if (onCreateOption) {
 			const newOption = await onCreateOption(name)
-			setSelectedOptions(prevSelectedOptions =>
-				isMultiSelect
-					? [...prevSelectedOptions, newOption]
-					: [newOption]
-			)
+			const newSelectedOptions = isMultiSelect
+				? [...selectedOptions, newOption]
+				: [newOption]
+
+			setSelectedOptions(newSelectedOptions)
+			if (onChange) {
+				setTimeout(() => onChange(newSelectedOptions), 0)
+			}
 			handleSearch('')
 			closeDropdown()
 		}
