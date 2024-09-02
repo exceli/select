@@ -2,10 +2,9 @@ import { useClickOutside } from '@/hooks/useClickOutside'
 import { useDropdownToggle } from '@/hooks/useDropdownToggle'
 import { useHandleSelect } from '@/hooks/useHandleSelect'
 import { useSearch } from '@/hooks/useSearch'
-import { useSelectedOptions } from '@/hooks/useSelectedOptions'
 import { getDisplayValue } from '@/utils/getDisplayValue'
 import clsx from 'clsx'
-import { KeyboardEvent, ReactNode, useRef } from 'react'
+import { Dispatch, KeyboardEvent, ReactNode, useEffect, useRef } from 'react'
 import { Dropdown } from './dropdown/dropdown'
 import { Input } from './input/input'
 import style from './select.module.scss'
@@ -18,6 +17,8 @@ export interface Option {
 
 interface SelectProps<T extends Option> {
 	options: T[]
+	selectedOptions: T[]
+	setSelectedOptions: Dispatch<React.SetStateAction<T[]>>
 	isMultiSelect?: boolean
 	defaultValue?: string | number | (string | number)[]
 	renderDropdown?: (
@@ -36,6 +37,8 @@ interface SelectProps<T extends Option> {
 
 export const Select = <T extends Option>({
 	options,
+	selectedOptions,
+	setSelectedOptions,
 	isMultiSelect = false,
 	defaultValue,
 	renderDropdown,
@@ -47,10 +50,6 @@ export const Select = <T extends Option>({
 	placeholder = 'Placeholder',
 	onChange,
 }: SelectProps<T>) => {
-	const { selectedOptions, setSelectedOptions } = useSelectedOptions(
-		options,
-		defaultValue
-	)
 	const { isDropdownOpen, toggleDropdown, closeDropdown } =
 		useDropdownToggle()
 	const { searchValue, handleSearch, filteredOptions } = useSearch(options)
@@ -97,6 +96,19 @@ export const Select = <T extends Option>({
 	}
 
 	useClickOutside(selectRef, closeDropdown)
+
+	useEffect(() => {
+		if (defaultValue) {
+			const defaultOptions = options.filter(option =>
+				Array.isArray(defaultValue)
+					? defaultValue.includes(option.id)
+					: defaultValue === option.id
+			)
+			setSelectedOptions(
+				isMultiSelect ? defaultOptions : defaultOptions.slice(0, 1)
+			)
+		}
+	}, [defaultValue, options, isMultiSelect, setSelectedOptions])
 
 	return (
 		<div

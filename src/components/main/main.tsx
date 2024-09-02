@@ -41,7 +41,7 @@ const initialOptions: Option[] = [
 
 export const MainPage = () => {
 	const [options, setOptions] = useState<Option[]>(initialOptions)
-	const [selected, setSelected] = useState<Option[]>([])
+	const [selectedOptions, setSelectedOptions] = useState<Option[]>([])
 
 	const handleCreateOption = async (name: string): Promise<Option> => {
 		const newOption = {
@@ -53,29 +53,35 @@ export const MainPage = () => {
 		return newOption
 	}
 
-	const handleSelectChange = (selectedOptions: Option[]) => {
-		setSelected(selectedOptions)
+	const handleSelectChange = (newSelectedOptions: Option[]) => {
+		setSelectedOptions(newSelectedOptions)
+		console.log('selected', newSelectedOptions)
 	}
 
 	const handleRemoveLabel = (id: number) => {
-		setSelected(prevSelected =>
+		setSelectedOptions(prevSelected =>
 			prevSelected.filter(option => option.id !== id)
 		)
 	}
-
-	console.log(selected)
 
 	return (
 		<div className={style.main}>
 			<div>
 				<div>
 					<div>Default</div>
-					<Select options={options} onChange={handleSelectChange} />
+					<Select
+						options={options}
+						selectedOptions={selectedOptions}
+						setSelectedOptions={setSelectedOptions}
+						onChange={handleSelectChange}
+					/>
 				</div>
 				<div>
 					<div>Default value</div>
 					<Select
 						options={options}
+						selectedOptions={selectedOptions}
+						setSelectedOptions={setSelectedOptions}
 						defaultValue={3}
 						onChange={handleSelectChange}
 					/>
@@ -84,6 +90,8 @@ export const MainPage = () => {
 					<div>Multiselect</div>
 					<Select
 						options={options}
+						selectedOptions={selectedOptions}
+						setSelectedOptions={setSelectedOptions}
 						isMultiSelect={true}
 						onChange={handleSelectChange}
 					/>
@@ -92,6 +100,8 @@ export const MainPage = () => {
 					<div>Custom dropdown</div>
 					<Select
 						options={options}
+						selectedOptions={selectedOptions}
+						setSelectedOptions={setSelectedOptions}
 						renderDropdown={(
 							options,
 							selectedOptions,
@@ -110,6 +120,8 @@ export const MainPage = () => {
 					<div>Custom label</div>
 					<Select
 						options={options}
+						selectedOptions={selectedOptions}
+						setSelectedOptions={setSelectedOptions}
 						isMultiSelect={true}
 						defaultValue={3}
 						renderLabel={option => (
@@ -126,6 +138,8 @@ export const MainPage = () => {
 					<div>Search on</div>
 					<Select
 						options={options}
+						selectedOptions={selectedOptions}
+						setSelectedOptions={setSelectedOptions}
 						defaultValue={3}
 						isMultiSelect={true}
 						enableSearch={true}
@@ -136,6 +150,8 @@ export const MainPage = () => {
 					<div>Search and add label on</div>
 					<Select
 						options={options}
+						selectedOptions={selectedOptions}
+						setSelectedOptions={setSelectedOptions}
 						defaultValue={3}
 						isMultiSelect={true}
 						enableSearch={true}
